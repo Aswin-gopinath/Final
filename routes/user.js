@@ -81,8 +81,9 @@ router.post('/login', (req, res) => {
       req.session.users = response.users;
       res.redirect('/')
     }
-    else {
-      req.session.userloginErr = true;
+    else 
+    {
+      req.session.userLoginErr = "Invalid username of passsword";
       res.redirect('/login')
     }
   })
@@ -97,8 +98,11 @@ router.get('/login', function (req, res, next)
   {
     res.redirect('/')
   }
-  res.render('user/login', { "loginErr": req.session.loginErr })
-  req.session.loginErr = false;
+  else
+  {
+  res.render('user/login', { LoginErr: req.session.userLoginErr })
+  req.session.LoginErr = false;
+  }
 });
 
 
@@ -323,6 +327,8 @@ router.get('/place-order', verifyLogin, async (req, res) =>
   {
     let total = await userHelpers.getTotalAmount(req.session.users._id)
     let products = await userHelpers.getCartProducts(req.session.users._id)
+    let savedAddress= await userHelpers.getAddress(req.session.users._id)
+    console.log(savedAddress)
     if (total.status) 
     {
       if (req.session.Total) 
@@ -330,7 +336,8 @@ router.get('/place-order', verifyLogin, async (req, res) =>
         total = Math.round(req.session.Total);
       }
       total = total.cartTotal
-      res.render("user/place-order", { users: req.session.users, total, products })
+      
+      res.render("user/place-order", { users: req.session.users, total, products,savedAddress })
     }
     else 
     {
@@ -340,7 +347,7 @@ router.get('/place-order', verifyLogin, async (req, res) =>
       }
 
       total = total.nullTotal
-      res.render("user/place-order", { users: req.session.users, total, products })
+      res.render("user/place-order", { users: req.session.users, total, products,savedAddress })
     }
   }
   catch (error) 
@@ -427,7 +434,7 @@ router.get('/orders', verifyLogin, async (req, res) =>
 
 router.get('/view-order-products/:id', verifyLogin, async (req, res) => 
 {
-  try 
+  try
   {
     let product = await userHelpers.getOrderProducts(req.params.id)
     res.render('user/view-order-products', { users: req.session.users, product })
