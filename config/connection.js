@@ -8,7 +8,7 @@ const state={
 // mongodb+srv://Aswin:Ashwin123@cluster0.idhgkg3.mongodb.net/?retryWrites=true&w=majority'
 
 module.exports.connect=function(done){ 
-    const url='mongodb+srv://Aswin:Ashwin123@cluster0.idhgkg3.mongodb.net/?retryWrites=true&w=majority' 
+    const url='mongodb://localhost://27017' 
     const dbname='project' 
   
     mongoClient.connect(url,(err,data)=>{
